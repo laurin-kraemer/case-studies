@@ -1,0 +1,111 @@
+---
+title: "Workbook"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Part 1: Motivation
+
+### Problem Statement
+- High Costs per click with SEM (Search Engine Marketing)
+- Airline industry a Competitive market with Low margins
+
+### State the Questions
+- Where do we allocate our marketing budget most efficiently?
+- How can we reduce Cost/Click, increase revenue and optimize performance?
+- Do branded keywords bring in more revenue?
+- What is the single-click conversion rate of branded / unbranded keywords?
+- Are broad or focused keywords more profitable?
+- Can assist keywords help increase conversion rate?
+- Which search engine delivers the most ROI
+- customer segments / search engine
+  --> Specific pattern in buying behavior?
+
+### Main Objectives
+- Minimize Cost/Click
+- Maximize Revenue
+- Maximize Single-click conversion
+- Maximize Profitability
+- Maximize Conversion Rate
+
+## What could be a positive outcome?
+
+## Part 2: Method
+
+What key resources do we acquire?
+
+Data
+
+Type: xls
+n_Sheets: 3
+
+Are all the imported variables important?
+Useful variables in the dataset
+
+$campaigns
+$impressions
+$click-through
+$Cost/Click
+$Revenue 
+$Single-click conversion
+$Profitability
+$Conversion Rate
+
+Sample size
+
+What is our approach to solve the problem?
+
+- Import the data
+R tries to import the first sheet of the excel file which resolves in an error. 
+Quick Fix: Change the first sheet in the excel file to the sheet that contains the data.
+
+Import Data into R Studio
+
+Clean & Process data
+
+Explore Data
+
+Plots
+
+Statistics
+
+Understand Data
+
+Correlation
+
+Association
+
+Features
+
+Apply ML-Algorithmus
+
+Mechanics
+
+Distribution
+
+Stats
+
+Boxplot
+
+Outlier
+
+Message
+
+Key Findings
+
+The C-suite of ___ face the following (problem/challenge), which is best solved with _ (solution) having an impact and/or making profits via ___ . The unique advantages/differentiators of the MVP are ____ , when comparing with the following key competitors / alternatives: ___
+
+Next steps
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
