@@ -1,13 +1,15 @@
 ---
 title: "Workbook"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Part 1: Motivation
+# Part 1: Motivation
 
 ### Problem Statement
 - High Costs per click with SEM (Search Engine Marketing)
@@ -33,14 +35,40 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## What could be a positive outcome?
 
-## Part 2: Method
+# Part 2: Method
 
-What key resources do we acquire?
+## What key resources do we acquire?
 
-Data
+Data:
+- Description
+- Type: xls
 
-Type: xls
-n_Sheets: 3
+Libraries:
+```{r}
+library(readxl)
+```
+
+## What is our approach to solve the problem?
+
+### Inspect & Import data
+R tries to import the first sheet of the excel file which resolves in an error. This is why the argument read_excel function has to be used to specifiy the column.
+
+```{r}
+
+# Inspect sheets of excel-file
+excel_sheets('C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls')
+```
+
+```{r}
+# Import data
+kayak <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
+                                                     sheet = "Kayak")
+
+doubleclick <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
+                         sheet = "DoubleClick")
+
+```
+
 
 Are all the imported variables important?
 Useful variables in the dataset
@@ -54,35 +82,23 @@ $Single-click conversion
 $Profitability
 $Conversion Rate
 
-Sample size
+### Explore Data
 
-What is our approach to solve the problem?
+##Massaging
 
-- Import the data
-R tries to import the first sheet of the excel file which resolves in an error. 
-Quick Fix: Change the first sheet in the excel file to the sheet that contains the data.
-
-Import Data into R Studio
-
-Clean & Process data
-
-Explore Data
+##Descriptive
 
 Plots
-
 Statistics
-
-Understand Data
-
 Correlation
-
 Association
 
-Features
+## Predictive
 
+Feature Selection
 Apply ML-Algorithmus
 
-Mechanics
+# Mechanics
 
 Distribution
 
@@ -92,7 +108,7 @@ Boxplot
 
 Outlier
 
-Message
+# Message
 
 Key Findings
 
