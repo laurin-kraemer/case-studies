@@ -1,8 +1,8 @@
 ---
 title: "Workbook"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -46,6 +46,7 @@ Data:
 Libraries:
 ```{r}
 library(readxl)
+library(tidyr)
 ```
 
 ## What is our approach to solve the problem?
@@ -70,6 +71,7 @@ doubleclick <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air
 ```
 
 
+
 Are all the imported variables important?
 Useful variables in the dataset
 
@@ -83,6 +85,15 @@ $Profitability
 $Conversion Rate
 
 ### Explore Data
+
+```{r}
+View(doubleclick)
+```
+
+```{r}
+doubleclick$`Keyword ID` <- as.numeric(doubleclick$`Keyword ID`)
+```
+
 
 ##Massaging
 
