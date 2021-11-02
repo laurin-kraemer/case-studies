@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Problem Statement
 - High Costs per click with SEM (Search Engine Marketing)
 - Airline industry a Competitive market with Low margins
+- Question 1
 
 ### State the Questions
 - Where do we allocate our marketing budget most efficiently?
@@ -87,7 +88,7 @@ $Conversion Rate
 ### Explore Data
 
 ```{r}
-#VConvert to dataframe
+#Convert to dataframe
 
 doubleclick <- as.data.frame(doubleclick)
 #Look for weird stuff
