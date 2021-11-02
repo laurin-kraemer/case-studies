@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### State the Questions
 - Where do we allocate our marketing budget most efficiently?
+- Find out  Cost, revenue and volume of campaigns
 - How can we reduce Cost/Click, increase revenue and optimize performance?
 - Do branded keywords bring in more revenue?
 - What is the single-click conversion rate of branded / unbranded keywords?
@@ -29,6 +30,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Main Objectives
 - Minimize Cost/Click
+- Maximize ROA
 - Maximize Revenue
 - Maximize Single-click conversion
 - Maximize Profitability
