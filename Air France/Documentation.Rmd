@@ -87,11 +87,17 @@ $Conversion Rate
 ### Explore Data
 
 ```{r}
-View(doubleclick)
+#VConvert to dataframe
+
+doubleclick <- as.data.frame(doubleclick)
+#Look for weird stuff
+table(doubleclick$`Match Type`)
 ```
 
+
 ```{r}
-doubleclick$`Keyword ID` <- as.numeric(doubleclick$`Keyword ID`)
+#$`Keyword ID` <- as.numeric(doubleclick$`Keyword ID`)
+?replace_na
 ```
 
 

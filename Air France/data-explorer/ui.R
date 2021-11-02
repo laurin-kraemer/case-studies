@@ -8,6 +8,19 @@
 #
 
 library(shiny)
+library(readxl)
+library(tidyverse)
+
+# Inspect sheets of excel-file
+excel_sheets('C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls')
+
+# Import data
+kayak <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
+                                                     sheet = "Kayak")
+
+doubleclick <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
+                         sheet = "DoubleClick")
+
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
