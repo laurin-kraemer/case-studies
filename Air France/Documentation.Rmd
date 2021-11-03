@@ -1,8 +1,8 @@
 ---
 title: "Workbook"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -14,21 +14,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Problem Statement
 - High Costs per click with SEM (Search Engine Marketing)
 - Airline industry a Competitive market with Low margins
+<<<<<<< HEAD
 - new data 
+=======
+>>>>>>> b37914405a9b0201afe709e4e8d933ffbe35b74b
 
 ### State the Questions
 - Where do we allocate our marketing budget most efficiently?
-- Find out  Cost, revenue and volume of campaigns
-- How can we reduce Cost/Click, increase revenue and optimize performance?
-- Do branded keywords bring in more revenue?
-- What is the single-click conversion rate of branded / unbranded keywords?
-- Are broad or focused keywords more profitable?
-- Can assist keywords help increase conversion rate?
-- Which search engine delivers the most ROI
-- customer segments / search engine
+- How can we reduce Cost/Click, increase revenue and optimize performance? 
+- Which search engine delivers the most ROI? (Manuel)
+- what are the customer segments / search engine
   --> Specific pattern in buying behavior?
 
 ### Main Objectives
+- Find out  Cost, revenue and volume of campaigns
+- Find out single-click conversion rate of branded / unbranded keywords?
 - Minimize Cost/Click
 - Maximize ROA
 - Maximize Revenue
@@ -44,39 +44,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Data:
 - Description
-- Type: xls
-
-Libraries:
-```{r}
-library(readxl)
-library(tidyr)
-```
-
-## What is our approach to solve the problem?
-
-### Inspect & Import data
-R tries to import the first sheet of the excel file which resolves in an error. This is why the argument read_excel function has to be used to specifiy the column.
-
-```{r}
-
-# Inspect sheets of excel-file
-excel_sheets('C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls')
-```
-
-```{r}
-# Import data
-kayak <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
-                                                     sheet = "Kayak")
-
-doubleclick <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
-                         sheet = "DoubleClick")
-
-```
-
 
 
 Are all the imported variables important?
-Useful variables in the dataset
+Useful variables in the dataset (Type: xls)
 
 $campaigns
 $impressions
@@ -87,24 +58,110 @@ $Single-click conversion
 $Profitability
 $Conversion Rate
 
-### Explore Data
+
+
+R Libraries
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE,fig.show='hide'}
+# Import Libraries
+library(readxl)
+library(tidyr)
+library(plotly)
+library(dplyr)
+```
+
+
+## What is our approach to solve the problem?
+
+High level process of steps 
+
+# Part 3: Mechanics
+
+### Inspect & Import data
+R tries to import the first sheet of the excel file which resolves in an error. This is why the argument read_excel function has to be used to specify the column.
+
+```{r}
+
+# Inspect sheets of excel-file
+excel_sheets('C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls')
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE,fig.show='hide'}
+# Import data
+kayak <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
+                                                     sheet = "Kayak")
+
+doubleclick <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
+                         sheet = "DoubleClick")
+
+```
+
+### Massaging
 
 ```{r}
 #Convert to dataframe
-
 doubleclick <- as.data.frame(doubleclick)
+
+# Get a big picture understanding of the data
+summary(doubleclick)
+
 #Look for weird stuff
 table(doubleclick$`Match Type`)
+
+# The NAs have to be removed.
+doubleclick_clean <- na.omit(doubleclick)
+
+# Notice how the number of rows gets reduced 
+print(nrow(doubleclick_clean))
+
+# Check the frequency counts of the campaigns that should be analyzed
+table(doubleclick_clean$Campaign)
+
+# Filter out the Unassigned campaigns 
+doubleclick_clean <- doubleclick_clean[-grep("Unassigned", doubleclick_clean$Campaign),]
+
 ```
 
+### Costs
+```{r}
+# Find out aggregated Costs per campaign
+costs_campaigns <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$Campaign), FUN=sum)
+
+# Which publisher gets used the most
+plot_ly(x = doubleclick_clean$'Publisher Name', type = "histogram")
+
+
+# Find out aggregated Costs per publisher
+costs_publisher <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$`Publisher Name`), FUN=sum)
+
+# Find out aggregated Costs per matchtype
+costs_matchtype <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$`Match Type`), FUN=sum)
+
+# Calculate costs per booking
+doubleclick_clean$'Costs per Booking' <- doubleclick_clean$`Total Cost`/doubleclick_clean$`Total Volume of Bookings`
+
+```
+
+### Visibility
 
 ```{r}
-#$`Keyword ID` <- as.numeric(doubleclick$`Keyword ID`)
-?replace_na
+# Visualize impressions per publisher
+plot_ly(doubleclick_clean, x = doubleclick_clean$`Publisher Name`, y=~Impressions)
+
+# Visualize impressions per campaign
+plot_ly(doubleclick_clean, x = doubleclick_clean$`Campaign`, y=~Impressions, type='bar')
 ```
 
+### Volume of Bookings
 
-##Massaging
+```{r}
+bookings_campaigns <- aggregate(doubleclick_clean$`Total Volume of Bookings`, by=list(doubleclick_clean$Campaign), FUN=sum)
+
+
+plot_ly(bookings_campaigns, x=~Group.1, y=~x)
+```
+Most of the impressions got generated by unassigned keywords!
+
 
 ##Descriptive
 
@@ -134,14 +191,9 @@ Key Findings
 
 The C-suite of ___ face the following (problem/challenge), which is best solved with _ (solution) having an impact and/or making profits via ___ . The unique advantages/differentiators of the MVP are ____ , when comparing with the following key competitors / alternatives: ___
 
-Next steps
+Next steps(What needs to be done!)
 
-## Including Plots
+- Do branded keywords bring in more revenue?
+- Are broad or focused keywords more profitable?
+- Can assist keywords help increase conversion rate?
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
