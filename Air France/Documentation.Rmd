@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Problem Statement
 - High Costs per click with SEM (Search Engine Marketing)
 - Airline industry a Competitive market with Low margins
-- Question 1
+- new data 
 
 ### State the Questions
 - Where do we allocate our marketing budget most efficiently?
