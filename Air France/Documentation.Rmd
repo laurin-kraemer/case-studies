@@ -120,11 +120,26 @@ table(doubleclick_clean$Campaign)
 doubleclick_clean <- doubleclick_clean[-grep("Unassigned", doubleclick_clean$Campaign),]
 
 ```
+```{r}
+test <- group_by(doubleclick_clean, Campaign)
 
-### Costs
+test %>% 
+  group_by(`Bid Strategy`) %>% 
+  summarize(n = n())
+  
+
+```
+
+
+### Campaigns
 ```{r}
 # Find out aggregated Costs per campaign
 costs_campaigns <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$Campaign), FUN=sum)
+
+# Find out aggregated revenue per campaign
+revenue_campaigns <- aggregate(doubleclick_clean$Amount, by=list(doubleclick_clean$Campaign), FUN=sum)
+
+roi_campaign <- (revenue_campaigns$x/costs_campaigns$x)
 
 # Which publisher gets used the most
 plot_ly(x = doubleclick_clean$'Publisher Name', type = "histogram")
