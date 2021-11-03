@@ -14,14 +14,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Problem Statement
 - High Costs per click with SEM (Search Engine Marketing)
 - Airline industry a Competitive market with Low margins
+<<<<<<< HEAD
+- new data 
+=======
+>>>>>>> b37914405a9b0201afe709e4e8d933ffbe35b74b
 
 ### State the Questions
 - Where do we allocate our marketing budget most efficiently?
-- How can we reduce Cost/Click, increase revenue and optimize performance?
-- Do branded keywords bring in more revenue?
-- Are broad or focused keywords more profitable?
-- Can assist keywords help increase conversion rate?
-- Which search engine delivers the most ROI
+- How can we reduce Cost/Click, increase revenue and optimize performance? 
+- Which search engine delivers the most ROI? (Manuel)
 - what are the customer segments / search engine
   --> Specific pattern in buying behavior?
 
@@ -205,5 +206,9 @@ Key Findings
 
 The C-suite of ___ face the following (problem/challenge), which is best solved with _ (solution) having an impact and/or making profits via ___ . The unique advantages/differentiators of the MVP are ____ , when comparing with the following key competitors / alternatives: ___
 
-Next steps
+Next steps(What needs to be done!)
+
+- Do branded keywords bring in more revenue?
+- Are broad or focused keywords more profitable?
+- Can assist keywords help increase conversion rate?
 
