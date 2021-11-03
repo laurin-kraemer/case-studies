@@ -14,10 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Problem Statement
 - High Costs per click with SEM (Search Engine Marketing)
 - Airline industry a Competitive market with Low margins
-<<<<<<< HEAD
-- new data 
-=======
->>>>>>> b37914405a9b0201afe709e4e8d933ffbe35b74b
 
 ### State the Questions
 - Where do we allocate our marketing budget most efficiently?
@@ -62,7 +58,7 @@ $Conversion Rate
 
 R Libraries
 
-```{r, message=FALSE, warning=FALSE, echo=FALSE,fig.show='hide'}
+```{r message=FALSE, warning=FALSE}
 # Import Libraries
 library(readxl)
 library(tidyr)
@@ -80,30 +76,34 @@ High level process of steps
 ### Inspect & Import data
 R tries to import the first sheet of the excel file which resolves in an error. This is why the argument read_excel function has to be used to specify the column.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 
 # Inspect sheets of excel-file
 excel_sheets('C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls')
 ```
 
-```{r, message=FALSE, warning=FALSE, echo=FALSE,fig.show='hide'}
+```{r message=FALSE}
 # Import data
-kayak <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
+kayak <- read_excel("Spreadsheet_Data.xls", 
                                                      sheet = "Kayak")
 
-doubleclick <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls", 
+doubleclick <- read_excel("Spreadsheet_Data.xls", 
                          sheet = "DoubleClick")
 
 ```
 
 ### Massaging
 
-```{r}
+```{r message=FALSE}
 #Convert to dataframe
 doubleclick <- as.data.frame(doubleclick)
 
 # Get a big picture understanding of the data
 summary(doubleclick)
+
+```
+
+```{r}
 
 #Look for weird stuff
 table(doubleclick$`Match Type`)
@@ -118,21 +118,13 @@ print(nrow(doubleclick_clean))
 table(doubleclick_clean$Campaign)
 
 # Filter out the Unassigned campaigns 
-doubleclick_clean <- doubleclick_clean[-grep("Unassigned", doubleclick_clean$Campaign),]
-
-```
-```{r}
-test <- group_by(doubleclick_clean, Campaign)
-
-test %>% 
-  group_by(`Bid Strategy`) %>% 
-  summarize(n = n())
-  
+#doubleclick_clean <- doubleclick_clean[-grep("Unassigned", doubleclick_clean$Campaign),]
 
 ```
 
+## Descriptive
 
-### Campaigns
+### Publisher
 ```{r}
 # Find out aggregated Costs per campaign
 costs_campaigns <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$Campaign), FUN=sum)
@@ -141,6 +133,25 @@ costs_campaigns <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick
 revenue_campaigns <- aggregate(doubleclick_clean$Amount, by=list(doubleclick_clean$Campaign), FUN=sum)
 
 roi_campaign <- (revenue_campaigns$x/costs_campaigns$x)
+
+```
+
+
+
+### Campaigns
+
+
+
+### Keywords
+
+```{r}
+ggplot(data=doubleclick_clean, aes(x=doubleclick_clean$`Clicks`, y=doubleclick_clean$`Impressions`, color=doubleclick_clean$`Match Type`)) + geom_point()
+
+```
+
+
+```{r}
+
 
 # Which publisher gets used the most
 plot_ly(x = doubleclick_clean$'Publisher Name', type = "histogram")
