@@ -14,21 +14,20 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Problem Statement
 - High Costs per click with SEM (Search Engine Marketing)
 - Airline industry a Competitive market with Low margins
-- Question 1
 
 ### State the Questions
 - Where do we allocate our marketing budget most efficiently?
-- Find out  Cost, revenue and volume of campaigns
 - How can we reduce Cost/Click, increase revenue and optimize performance?
 - Do branded keywords bring in more revenue?
-- What is the single-click conversion rate of branded / unbranded keywords?
 - Are broad or focused keywords more profitable?
 - Can assist keywords help increase conversion rate?
 - Which search engine delivers the most ROI
-- customer segments / search engine
+- what are the customer segments / search engine
   --> Specific pattern in buying behavior?
 
 ### Main Objectives
+- Find out  Cost, revenue and volume of campaigns
+- Find out single-click conversion rate of branded / unbranded keywords?
 - Minimize Cost/Click
 - Maximize ROA
 - Maximize Revenue
@@ -44,18 +43,46 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Data:
 - Description
-- Type: xls
 
-Libraries:
+
+Are all the imported variables important?
+Useful variables in the dataset (Type: xls)
+
+$campaigns
+$impressions
+$click-through
+$Cost/Click
+$Revenue 
+$Single-click conversion
+$Profitability
+$Conversion Rate
+
+
+
+R Libraries
 ```{r}
+# Import Libraries
 library(readxl)
 library(tidyr)
+library(plotly)
+library(dplyr)
 ```
+
 
 ## What is our approach to solve the problem?
 
+High level process of steps 
+
+
+
+
+
+
+
+# Part 3: Mechanics
+
 ### Inspect & Import data
-R tries to import the first sheet of the excel file which resolves in an error. This is why the argument read_excel function has to be used to specifiy the column.
+R tries to import the first sheet of the excel file which resolves in an error. This is why the argument read_excel function has to be used to specify the column.
 
 ```{r}
 
@@ -73,39 +100,43 @@ doubleclick <- read_excel("C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air
 
 ```
 
-
-
-Are all the imported variables important?
-Useful variables in the dataset
-
-$campaigns
-$impressions
-$click-through
-$Cost/Click
-$Revenue 
-$Single-click conversion
-$Profitability
-$Conversion Rate
-
-### Explore Data
+### Massaging
 
 ```{r}
 #Convert to dataframe
-
 doubleclick <- as.data.frame(doubleclick)
+
+# Get a big picture understanding of the data
+summary(doubleclick)
+
 #Look for weird stuff
 table(doubleclick$`Match Type`)
+
+# The NAs have to be removed.
+doubleclick_clean <- na.omit(doubleclick)
+
+# Notice how the number of rows gets reduced 
+print(nrow(doubleclick_clean))
 ```
 
+# Financials
+```{r}
+# Find out aggregated Costs per campaign
+costs_campaigns <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$Campaign), FUN=sum)
+
+# Find out aggregated Costs per publisher
+costs_publisher <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$`Publisher Name`), FUN=sum)
+
+# Find out aggregated Costs per matchtype
+costs_matchtype <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$`Match Type`), FUN=sum)
+
+```
 
 ```{r}
-#$`Keyword ID` <- as.numeric(doubleclick$`Keyword ID`)
-?replace_na
+# Visualize impressions per publisher
+
+plot_ly(doubleclick_clean, x = doubleclick_clean$`Publisher Name`, y=~Impressions)
 ```
-
-
-##Massaging
-
 ##Descriptive
 
 Plots
