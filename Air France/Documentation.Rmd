@@ -157,8 +157,11 @@ It seems like Google-US has the highest clickthrough rate and the costs / click 
 
 ```{r}
 
-# Visualize impressions per publisher
-ggplot(data=doubleclick_clean, aes(x=sem$`Publisher Name`, y=sem$`Impressions`, color=sem$`Match Type`)) + geom_point() + scale_y_continuous(trans='log10') 
+# Total Cost per Transaction - Distribution per Publisher
+plot_ly(sem,y = ~`Total Cost/ Trans.`, color = ~`Publisher Name`, type = "box")
+
+# Visualize distribution of Bid Strategies for single Publishers
+plot_ly(sem[which(sem$`Publisher Name`=='Google - US'),], x = ~`Publisher Name`, y = ~`Total Cost/ Trans.`, color = ~`Bid Strategy`, type = "box")
 
 # Visualize impressions per campaign
 plot_ly(doubleclick_clean, x = doubleclick_clean$`Campaign`, y=~Impressions, type='bar')
