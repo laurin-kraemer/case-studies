@@ -137,21 +137,19 @@ table(sem$`Bid Strategy`)
 # Find out unique publishers
 unique(sem$`Publisher Name`)
 
-
 # Average out the clickthroughs per publisher
 clickthrough_publisher <- aggregate(sem$`Engine Click Thru %`, by=list(sem$`Publisher Name`), FUN=mean) 
 
 # Visualize average clickthroughs per publisher
-plot_ly(clickthrough_publisher, x = clickthrough_publisher$`Group.1`, y=~`x`)
+plot_ly(clickthrough_publisher, x = clickthrough_publisher$`Group.1`, y=~`x`,title = 'Average Clickthrough rate of different publisher')%>%
+        layout(title = 'Clickthrough per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Clickthrough Rate in %'))
 
 # Average out the costs per click per publisher
 costs_publisher <- aggregate(sem$`Total Cost/ Trans.`, by=list(sem$`Publisher Name`), FUN=mean) 
 
-# Visualize average clickthroughs per engine
-plot_ly(costs_publisher, x = costs_publisher$`Group.1`, y=~`x`)
-
-
-
+# Visualize average costs per transaction per engine
+plot_ly(costs_publisher, x = costs_publisher$`Group.1`, y=~`x`)%>%
+        layout(title = 'Average Costs per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Costs / Transaction'))
 
 ```
 It seems like Google-US has the highest clickthrough rate and the costs / click are unusually high for Yahoo - US. One reason could be the advanced Match Type that gets Air France uses on that engine.
