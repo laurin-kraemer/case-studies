@@ -46,10 +46,7 @@ sem <- doubleclick_clean[,c('Campaign','Keyword','Keyword Group','Publisher Name
 clickthrough_publisher <- aggregate(sem$`Engine Click Thru %`, by=list(sem$`Publisher Name`), FUN=mean) 
 ```
 
-## Problem Statement
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-## Analysis | Performance Publisher
 
 ```{r clickthrough, echo = FALSE, message=FALSE, warning=FALSE}
 # Clickthrough rate
@@ -57,16 +54,12 @@ plot_ly(clickthrough_publisher, x = clickthrough_publisher$`Group.1`, y=~`x`,tit
         layout(title = 'Clickthrough per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Clickthrough Rate in %'))
 ```
 
-## Slide with Plot
+### Slide with Plot
 
 ```{r pressure}
 
-plot(pressure)
 ```
-
-## # Part 1: Motivation
-
-### Problem Statement
+### Motivation
 - High Costs per click with SEM (Search Engine Marketing)
 - Airline industry a Competitive market with Low margins
 
@@ -74,4 +67,40 @@ plot(pressure)
 ```{r hhh, echo = FALSE, message=FALSE, warning=FALSE}
 
 ```
+### Target Goals
+- Where do we allocate our marketing budget most efficiently?
+- How can we reduce Cost/Click, increase revenue and optimize performance? 
+- Which search engine delivers the most ROI?
+- what are the customer segments / search engine
+
+```{r}
+
+```
+
+### Data Description 
+
+-Campaigns
+-Impressions
+-Click-through
+-Cost/Click
+-Revenue 
+-Single-click conversion
+-Profitability
+-Conversion Rate
+
+```{r}
+
+```
+
+### Key Findings
+
+-
+
+
+### Recommendations for the future
+
+- Do branded keywords bring in more revenue?
+- Are broad or focused keywords more profitable?
+- Can assist keywords help increase conversion rate?
+
 
