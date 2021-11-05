@@ -154,8 +154,8 @@ plot_ly(clickthrough_publisher, x = clickthrough_publisher$`Group.1`, y=~`x`,tit
 transactions_publisher <- aggregate(sem$`Total Volume of Bookings`, by=list(sem$`Publisher Name`), FUN=sum) 
 
 # Visualize transactions per publisher
-plot_ly(transactions_publisher, x = transactions_publisher$`Group.1`, y=~`x`,title = 'Transactions per publisher')%>%
-        layout(title = 'Transactions per publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Transactions'))
+plot_ly(transactions_publisher, x = transactions_publisher$`Group.1`, y=~`x`,title = 'Bookings per publisher')%>%
+        layout(title = 'Bookings per publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Transactions'))
 
 
 # What are the overall average costs / transaction
