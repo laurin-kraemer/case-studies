@@ -173,6 +173,8 @@ plot_ly(costs_publisher, x = costs_publisher$`Group.1`, y=~`x`)%>%
 ```
 It seems like Google-US has the highest clickthrough rate and the costs / click are unusually high for Yahoo - US. One reason could be the advanced Match Type that gets Air France uses on that engine.
 
+Yahoo-US has the highest percentage of click through rate with and impressive ~16%. What makes this output so impressive is that Yahoo-US has the second lowest  cost per campaign with an average of $7.95, and Yahoo-US is still able to concure the top three Transactions per publishes with a total of 662.
+
 
 ```{r}
 
