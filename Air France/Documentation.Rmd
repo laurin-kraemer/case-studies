@@ -23,7 +23,9 @@ knitr::opts_chunk$set(echo = TRUE)
   --> Specific pattern in buying behavior?
 
 ### Main Objectives
-- Find out  Cost, revenue and volume of campaigns
+- Find out profitability of campaigns / search engines / keywords
+- Compare different bid strategies
+- Which platform offers the most visibility?
 - Find out single-click conversion rate of branded / unbranded keywords?
 - Minimize Cost/Click
 - Maximize ROA
@@ -79,7 +81,7 @@ R tries to import the first sheet of the excel file which resolves in an error. 
 ```{r message=FALSE, warning=FALSE}
 
 # Inspect sheets of excel-file
-excel_sheets('C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/assets/Air France Case Spreadsheet Supplement.xls')
+excel_sheets('Spreadsheet_Data.xls')
 ```
 
 ```{r message=FALSE}
@@ -94,16 +96,10 @@ doubleclick <- read_excel("Spreadsheet_Data.xls",
 
 ### Massaging
 
-```{r message=FALSE}
-#Convert to dataframe
-doubleclick <- as.data.frame(doubleclick)
-
-# Get a big picture understanding of the data
-summary(doubleclick)
-
-```
 
 ```{r}
+#Convert to dataframe
+doubleclick <- as.data.frame(doubleclick)
 
 #Look for weird stuff
 table(doubleclick$`Match Type`)
@@ -114,102 +110,106 @@ doubleclick_clean <- na.omit(doubleclick)
 # Notice how the number of rows gets reduced 
 print(nrow(doubleclick_clean))
 
-# Check the frequency counts of the campaigns that should be analyzed
-table(doubleclick_clean$Campaign)
+# Look for Spelling mistakes
+unique(doubleclick_clean $`Bid Strategy`)
 
-# Filter out the Unassigned campaigns 
-#doubleclick_clean <- doubleclick_clean[-grep("Unassigned", doubleclick_clean$Campaign),]
+# Replace Typos
+doubleclick_clean$`Bid Strategy` <- gsub("Postiion 1-4 Bid Strategy","Position 1-4 Bid Strategy",doubleclick_clean$`Bid Strategy`)
+
+doubleclick_clean$`Bid Strategy` <- gsub("Position 1 -2 Target","Position 1-2 Target",doubleclick_clean$`Bid Strategy`)
 
 ```
 
 ## Descriptive
 
-### Publisher
 ```{r}
-# Find out aggregated Costs per campaign
-costs_campaigns <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$Campaign), FUN=sum)
 
-# Find out aggregated revenue per campaign
-revenue_campaigns <- aggregate(doubleclick_clean$Amount, by=list(doubleclick_clean$Campaign), FUN=sum)
+# Create data set for analysis
+sem <- doubleclick_clean[,c('Campaign','Keyword','Keyword Group','Publisher Name', 'Bid Strategy','Engine Click Thru %','Match Type','Trans. Conv. %','Total Cost/ Trans.','Impressions')]
 
-roi_campaign <- (revenue_campaigns$x/costs_campaigns$x)
+# Get a big picture understanding of the data
+summary(sem)
+str(sem)
+
+# Find out most frequently used bid strategy
+table(sem$`Bid Strategy`)
+
+# Find out unique publishers
+unique(sem$`Publisher Name`)
+
+# Average out the clickthroughs per publisher
+clickthrough_publisher <- aggregate(sem$`Engine Click Thru %`, by=list(sem$`Publisher Name`), FUN=mean) 
+
+# Visualize average clickthroughs per publisher
+plot_ly(clickthrough_publisher, x = clickthrough_publisher$`Group.1`, y=~`x`,title = 'Average Clickthrough rate of different publisher')%>%
+        layout(title = 'Clickthrough per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Clickthrough Rate in %'))
+
+# What are the overall average costs / transaction
+avg_costs_transaction <- print(mean(sem$`Total Cost/ Trans.`))
+
+# Average out the costs per transaction per publisher
+costs_publisher <- aggregate(sem$`Total Cost/ Trans.`, by=list(sem$`Publisher Name`), FUN=mean) 
+
+# Visualize average costs per transaction per engine
+plot_ly(costs_publisher, x = costs_publisher$`Group.1`, y=~`x`)%>%
+        layout(title = 'Average Costs per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Costs / Transaction'))
+
+```
+It seems like Google-US has the highest clickthrough rate and the costs / click are unusually high for Yahoo - US. One reason could be the advanced Match Type that gets Air France uses on that engine.
+
+
+```{r}
+
+# Total Cost per Transaction - Distribution per Publisher
+plot_ly(sem,y = ~`Total Cost/ Trans.`, color = ~`Publisher Name`, type = "box")
+
+# Visualize distribution of Bid Strategies for single Publishers
+plot_ly(sem[which(sem$`Publisher Name`=='Google - US'),], x = ~`Publisher Name`, y = ~`Total Cost/ Trans.`, color = ~`Bid Strategy`, type = "box")
+
+# Visualize impressions per campaign
+plot_ly(doubleclick_clean, x = doubleclick_clean$`Campaign`, y=~Impressions, type='bar')
 
 ```
 
+Most impressions come from unassigned keywords. 
 
+```{r}
 
-### Campaigns
+# Select observations with the highest total cost per transaction
+sem_sub <- subset(sem,subset = `Total Cost/ Trans.` > 0)
 
+# Visualize the costs per transactions for different Publisher
+p <- plot_ly(sem_sub, y = ~`Total Cost/ Trans.`, color = I("black"), 
+             alpha = 0.2, boxpoints = "suspectedoutliers")
+p1 <- p %>% add_boxplot(x = ~`Publisher Name`)
+p1
 
+# Visualize the converted transactions for different bid strategies
+convert_bid <- plot_ly(sem_sub, y = ~`Trans. Conv. %`, color = I("black"), 
+             alpha = 0.2, boxpoints = "suspectedoutliers")
+p2 <- p %>% add_boxplot(x = ~`Bid Strategy`)
+p2
+
+# Visualize the numerical variables in 3D-Space
+plot_ly(sem, x = ~`Engine Click Thru %`, y = ~`Trans. Conv. %`, z =~`Total Cost/ Trans.`) %>%
+  add_markers(color = ~`Trans. Conv. %`)
+
+```
 
 ### Keywords
 
 ```{r}
-ggplot(data=doubleclick_clean, aes(x=doubleclick_clean$`Clicks`, y=doubleclick_clean$`Impressions`, color=doubleclick_clean$`Match Type`)) + geom_point()
+ggplot(data=doubleclick_clean, aes(x=sem$`Trans. Conv.`, y=sem$`Total Cost/ Trans.`, color=sem$`Publisher Name`)) + geom_point() + scale_y_continuous(trans='log10') + scale_x_continuous(trans='log10')
 
 ```
-
-
-```{r}
-
-
-# Which publisher gets used the most
-plot_ly(x = doubleclick_clean$'Publisher Name', type = "histogram")
-
-
-# Find out aggregated Costs per publisher
-costs_publisher <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$`Publisher Name`), FUN=sum)
-
-# Find out aggregated Costs per matchtype
-costs_matchtype <- aggregate(doubleclick_clean$`Total Cost`, by=list(doubleclick_clean$`Match Type`), FUN=sum)
-
-# Calculate costs per booking
-doubleclick_clean$'Costs per Booking' <- doubleclick_clean$`Total Cost`/doubleclick_clean$`Total Volume of Bookings`
-
-```
-
-### Visibility
-
-```{r}
-# Visualize impressions per publisher
-plot_ly(doubleclick_clean, x = doubleclick_clean$`Publisher Name`, y=~Impressions)
-
-# Visualize impressions per campaign
-plot_ly(doubleclick_clean, x = doubleclick_clean$`Campaign`, y=~Impressions, type='bar')
-```
-
-### Volume of Bookings
-
-```{r}
-bookings_campaigns <- aggregate(doubleclick_clean$`Total Volume of Bookings`, by=list(doubleclick_clean$Campaign), FUN=sum)
-
-
-plot_ly(bookings_campaigns, x=~Group.1, y=~x)
-```
-Most of the impressions got generated by unassigned keywords!
-
-
-##Descriptive
-
-Plots
-Statistics
-Correlation
-Association
 
 ## Predictive
 
 Feature Selection
-Apply ML-Algorithmus
+Model
 
-# Mechanics
 
-Distribution
 
-Stats
-
-Boxplot
-
-Outlier
 
 # Message
 
