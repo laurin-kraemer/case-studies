@@ -39,12 +39,20 @@ doubleclick_clean$`Bid Strategy` <- gsub("Postiion 1-4 Bid Strategy","Position 1
 
 doubleclick_clean$`Bid Strategy` <- gsub("Position 1 -2 Target","Position 1-2 Target",doubleclick_clean$`Bid Strategy`)
 
+# Create data set for analysis
+sem <- doubleclick_clean[,c('Campaign','Keyword','Keyword Group','Publisher Name', 'Bid Strategy','Engine Click Thru %','Match Type','Trans. Conv. %','Total Cost/ Trans.','Impressions','Total Volume of Bookings')]
+
+# Average out the clickthroughs per publisher
+clickthrough_publisher <- aggregate(sem$`Engine Click Thru %`, by=list(sem$`Publisher Name`), FUN=mean) 
+
+# Sum up Transactions per publisher
+transactions_publisher <- aggregate(sem$`Total Volume of Bookings`, by=list(sem$`Publisher Name`), FUN=sum) 
 ```
 
 ## Problem Statement
 This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-## Analysis | Performance Publisher
+## Key Findings | Performance Publisher
 
 ```{r clickthrough, echo = FALSE, message=FALSE, warning=FALSE}
 # Clickthrough rate
@@ -52,12 +60,23 @@ plot_ly(clickthrough_publisher, x = clickthrough_publisher$`Group.1`, y=~`x`,tit
         layout(title = 'Clickthrough per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Clickthrough Rate in %'))
 ```
 
-## Slide with Plot
+## Key Findings | Bookings per Publisher
 
-```{r pressure}
-
-plot(pressure)
+```{r bookings, echo = FALSE, message=FALSE, warning=FALSE}
+# Visualize transactions per publisher
+plot_ly(transactions_publisher, x = transactions_publisher$`Group.1`, y=~`x`,title = 'Bookings per publisher')%>%
+        layout(title = 'Bookings per publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Transactions'))
 ```
+
+## Key Findings | Transaction Costs per Publisher
+
+```{r transactions, echo = FALSE, message=FALSE, warning=FALSE}
+# Visualize average costs per transaction per engine
+plot_ly(costs_publisher, x = costs_publisher$`Group.1`, y=~`x`)%>%
+        layout(title = 'Average Costs per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Costs / Transaction'))
+```
+
+
 
 ## # Part 1: Motivation
 
