@@ -56,6 +56,9 @@ $Single-click conversion
 $Profitability
 $Conversion Rate
 
+```{r}
+
+```
 
 
 R Libraries
@@ -99,22 +102,17 @@ doubleclick <- read_excel("Spreadsheet_Data.xls",
 
 ```{r}
 #Convert to dataframe
-doubleclick <- as.data.frame(doubleclick)
+doubleclick_clean <- as.data.frame(doubleclick)
 
 #Look for weird stuff
-#for (i in 1:ncol(doubleclick)){
- # print(table(doubleclick[,i]))
-#} #closing the i loop
+colSums(is.na(doubleclick_clean))
+table(doubleclick_clean$`Bid Strategy`)
 
-
-# The NAs have to be removed.
-doubleclick_clean <- doubleclick[!(is.na(doubleclick$`Match Type`)), ]
+# Replace NA entries  in bid strategy with Unassigned
+doubleclick_clean$`Bid Strategy`[is.na(doubleclick_clean$`Bid Strategy`)] = "Unassigned"
 
 # Notice how the number of rows gets reduced 
 print(nrow(doubleclick_clean))
-
-# Replace NA entries
-doubleclick_clean$`Bid Strategy` <- replace_na('Unassigned')
 
 # Look for Spelling mistakes
 unique(doubleclick_clean $`Bid Strategy`)
@@ -188,6 +186,25 @@ plot_ly(sem[which(sem$`Publisher Name`=='Google - US'),], x = ~`Publisher Name`,
 plot_ly(doubleclick_clean, x = doubleclick_clean$`Campaign`, y=~Impressions, type='bar')
 
 ```
+```{r variable_distribution}
+
+library('GGally')
+
+# Select all the numerical variables
+logic <- sapply(sem, is.numeric)
+numerical_var <- sem[,logic]
+
+# Select all the numerical variables
+#logic <- sapply(doubleclick_clean, is.numeric)
+#numerical_var <- doubleclick_clean[,logic]
+
+numerical_var_standardized <- as.data.frame(scale(numerical_var))
+
+p <- ggpairs(numerical_var_standardized, title="correlogram with ggpairs()") 
+ggplotly(p)
+
+```
+
 
 Most impressions come from unassigned keywords. 
 
