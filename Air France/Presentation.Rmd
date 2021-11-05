@@ -18,15 +18,15 @@ kayak <- read_excel("Spreadsheet_Data.xls",
 
 doubleclick <- read_excel("Spreadsheet_Data.xls", 
                          sheet = "DoubleClick")
-
 #Convert to dataframe
-doubleclick <- as.data.frame(doubleclick)
+doubleclick_clean <- as.data.frame(doubleclick)
 
 #Look for weird stuff
-table(doubleclick$`Match Type`)
+colSums(is.na(doubleclick_clean))
+table(doubleclick_clean$`Bid Strategy`)
 
-# The NAs have to be removed.
-doubleclick_clean <- na.omit(doubleclick)
+# Replace NA entries  in bid strategy with Unassigned
+doubleclick_clean$`Bid Strategy`[is.na(doubleclick_clean$`Bid Strategy`)] = "Unassigned"
 
 # Notice how the number of rows gets reduced 
 print(nrow(doubleclick_clean))
@@ -39,11 +39,6 @@ doubleclick_clean$`Bid Strategy` <- gsub("Postiion 1-4 Bid Strategy","Position 1
 
 doubleclick_clean$`Bid Strategy` <- gsub("Position 1 -2 Target","Position 1-2 Target",doubleclick_clean$`Bid Strategy`)
 
-
-# Create data set for analysis
-sem <- doubleclick_clean[,c('Campaign','Keyword','Keyword Group','Publisher Name', 'Bid Strategy','Engine Click Thru %','Match Type','Trans. Conv. %','Total Cost/ Trans.','Impressions')]
-
-clickthrough_publisher <- aggregate(sem$`Engine Click Thru %`, by=list(sem$`Publisher Name`), FUN=mean) 
 ```
 
 ## Problem Statement
