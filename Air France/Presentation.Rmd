@@ -60,6 +60,18 @@ plot_ly(clickthrough_publisher, x = clickthrough_publisher$`Group.1`, y=~`x`,tit
 ## Slide with Plot
 
 ```{r pressure}
+
 plot(pressure)
+```
+
+## # Part 1: Motivation
+
+### Problem Statement
+- High Costs per click with SEM (Search Engine Marketing)
+- Airline industry a Competitive market with Low margins
+
+
+```{r hhh, echo = FALSE, message=FALSE, warning=FALSE}
+
 ```
 
