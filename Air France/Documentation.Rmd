@@ -102,13 +102,19 @@ doubleclick <- read_excel("Spreadsheet_Data.xls",
 doubleclick <- as.data.frame(doubleclick)
 
 #Look for weird stuff
-table(doubleclick$`Match Type`)
+#for (i in 1:ncol(doubleclick)){
+ # print(table(doubleclick[,i]))
+#} #closing the i loop
+
 
 # The NAs have to be removed.
-doubleclick_clean <- na.omit(doubleclick)
+doubleclick_clean <- doubleclick[!(is.na(doubleclick$`Match Type`)), ]
 
 # Notice how the number of rows gets reduced 
 print(nrow(doubleclick_clean))
+
+# Replace NA entries
+doubleclick_clean$`Bid Strategy` <- replace_na('Unassigned')
 
 # Look for Spelling mistakes
 unique(doubleclick_clean $`Bid Strategy`)
@@ -124,8 +130,10 @@ doubleclick_clean$`Bid Strategy` <- gsub("Position 1 -2 Target","Position 1-2 Ta
 
 ```{r}
 
+# Count of observations
+
 # Create data set for analysis
-sem <- doubleclick_clean[,c('Campaign','Keyword','Keyword Group','Publisher Name', 'Bid Strategy','Engine Click Thru %','Match Type','Trans. Conv. %','Total Cost/ Trans.','Impressions')]
+sem <- doubleclick_clean[,c('Campaign','Keyword','Keyword Group','Publisher Name', 'Bid Strategy','Engine Click Thru %','Match Type','Trans. Conv. %','Total Cost/ Trans.','Impressions','Total Volume of Bookings')]
 
 # Get a big picture understanding of the data
 summary(sem)
@@ -143,6 +151,14 @@ clickthrough_publisher <- aggregate(sem$`Engine Click Thru %`, by=list(sem$`Publ
 # Visualize average clickthroughs per publisher
 plot_ly(clickthrough_publisher, x = clickthrough_publisher$`Group.1`, y=~`x`,title = 'Average Clickthrough rate of different publisher')%>%
         layout(title = 'Clickthrough per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Clickthrough Rate in %'))
+
+# Sum up Transactions per publisher
+transactions_publisher <- aggregate(sem$`Total Volume of Bookings`, by=list(sem$`Publisher Name`), FUN=sum) 
+
+# Visualize transactions per publisher
+plot_ly(transactions_publisher, x = transactions_publisher$`Group.1`, y=~`x`,title = 'Transactions per publisher')%>%
+        layout(title = 'Transactions per publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Transactions'))
+
 
 # What are the overall average costs / transaction
 avg_costs_transaction <- print(mean(sem$`Total Cost/ Trans.`))
