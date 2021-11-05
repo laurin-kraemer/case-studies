@@ -1,0 +1,51 @@
+---
+title: "Untitled"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+kayak <- read_excel("Spreadsheet_Data.xls", 
+                                                     sheet = "Kayak")
+
+doubleclick <- read_excel("Spreadsheet_Data.xls", 
+                         sheet = "DoubleClick")
+#Convert to dataframe
+doubleclick <- as.data.frame(doubleclick)
+# The NAs have to be removed.
+doubleclick_clean <- na.omit(doubleclick)
+
+# Replace Typos
+doubleclick_clean$`Bid Strategy` <- gsub("Postiion 1-4 Bid Strategy","Position 1-4 Bid Strategy",doubleclick_clean$`Bid Strategy`)
+
+doubleclick_clean$`Bid Strategy` <- gsub("Position 1 -2 Target","Position 1-2 Target",doubleclick_clean$`Bid Strategy`)
+sem <- doubleclick_clean[,c('Campaign','Keyword','Keyword Group','Publisher Name', 'Bid Strategy','Engine Click Thru %','Match Type','Trans. Conv. %','Total Cost/ Trans.','Impressions')]
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+`When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+```{r Stats}
+unique(sem$`Publisher Name`)
+```
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
