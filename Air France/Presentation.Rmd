@@ -47,6 +47,9 @@ clickthrough_publisher <- aggregate(sem$`Engine Click Thru %`, by=list(sem$`Publ
 
 # Sum up Transactions per publisher
 transactions_publisher <- aggregate(sem$`Total Volume of Bookings`, by=list(sem$`Publisher Name`), FUN=sum) 
+
+# Average out the costs per transaction per publisher
+costs_publisher <- aggregate(sem$`Total Cost/ Trans.`, by=list(sem$`Publisher Name`), FUN=mean) 
 ```
 
 ## Problem Statement
@@ -75,7 +78,6 @@ plot_ly(transactions_publisher, x = transactions_publisher$`Group.1`, y=~`x`,tit
 plot_ly(costs_publisher, x = costs_publisher$`Group.1`, y=~`x`)%>%
         layout(title = 'Average Costs per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Costs / Transaction'))
 ```
-
 
 
 ## # Part 1: Motivation
