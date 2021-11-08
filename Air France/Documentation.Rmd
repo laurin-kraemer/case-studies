@@ -1,8 +1,9 @@
 ---
 title: "Workbook"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -27,41 +28,30 @@ knitr::opts_chunk$set(echo = TRUE)
 - Compare different bid strategies
 - Which platform offers the most visibility?
 - Find out single-click conversion rate of branded / unbranded keywords?
-- Minimize Cost/Click
-- Maximize ROA
-- Maximize Revenue
-- Maximize Single-click conversion
-- Maximize Profitability
-- Maximize Conversion Rate
 
 ## What could be a positive outcome?
+- Minimize Cost/Click
+- Maximize ROA
+- Maximize Single-click conversion
 
 # Part 2: Method
 
 ## What key resources do we acquire?
 
-Data:
-- Description
+- Description Data:
 
-
-Are all the imported variables important?
 Useful variables in the dataset (Type: xls)
 
-$campaigns
-$impressions
-$click-through
-$Cost/Click
-$Revenue 
-$Single-click conversion
-$Profitability
-$Conversion Rate
+- $impressions
 
-```{r}
-
-```
+Features of interest
+- costs per publisher
+- $Cost / Click
+- cost / $campaigns
+- costs / $bidstrategy
 
 
-R Libraries
+2. R Libraries
 
 ```{r message=FALSE, warning=FALSE}
 # Import Libraries

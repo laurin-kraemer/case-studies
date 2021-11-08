@@ -12,7 +12,7 @@ library(readxl)
 library(tidyverse)
 
 # Import data
-kayak <- read_excel("Spreadsheet_Data.xls", 
+kayak <- read_excel("vSpreadsheet_Data.xls", 
                     sheet = "Kayak")
 
 doubleclick <- read_excel("Spreadsheet_Data.xls", 

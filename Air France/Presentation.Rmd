@@ -1,6 +1,9 @@
 ---
-title: "Untitled"
-output: slidy_presentation
+title: "Air France | Team 13"
+output:
+  slidy_presentation: default
+  beamer_presentation: default
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -50,10 +53,44 @@ transactions_publisher <- aggregate(sem$`Total Volume of Bookings`, by=list(sem$
 
 # Average out the costs per transaction per publisher
 costs_publisher <- aggregate(sem$`Total Cost/ Trans.`, by=list(sem$`Publisher Name`), FUN=mean) 
+
+# Average out the costs per transaction per Strategy
+costs_strategy <- aggregate(sem$`Total Cost/ Trans.`, by=list(sem$`Bid Strategy`), FUN=mean) 
 ```
 
+
 ## Problem Statement
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+- High Costs per click with SEM (Search Engine Marketing)
+- Airline industry a Competitive market with Low margins
+
+***
+
+## Target Goals
+- Where do we allocate our marketing budget most efficiently?
+- How can we reduce Cost/Click, increase revenue and optimize performance?
+- Which search engine delivers the most ROI?
+
+***
+
+## Variables of Interest 
+- Campaigns
+- Impressions
+- Click-through
+- Cost/Click
+- Revenue 
+- Single-click conversion
+- Conversion Rate
+
+## Method
+
+- Get familiar with case
+- State Key Problems
+- Import Data
+- Massage Data | Rename NAs
+- Descriptive
+- Aggregate, Analyze and Visualize
+- Summarize Key Findings
+
 
 ## Key Findings | Performance Publisher
 
@@ -79,15 +116,17 @@ plot_ly(costs_publisher, x = costs_publisher$`Group.1`, y=~`x`)%>%
         layout(title = 'Average Costs per Publisher', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Costs / Transaction'))
 ```
 
+## Key Findings | Transaction Costs per Strategy
 
-## # Part 1: Motivation
-
-### Problem Statement
-- High Costs per click with SEM (Search Engine Marketing)
-- Airline industry a Competitive market with Low margins
-
-
-```{r hhh, echo = FALSE, message=FALSE, warning=FALSE}
-
+```{r costs, echo = FALSE, message=FALSE, warning=FALSE}
+# Visualize average costs per transaction per engine
+plot_ly(costs_strategy, x = costs_strategy$`Group.1`, y=~`x`)%>%
+        layout(title = 'Average Costs per Strategy', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Publisher'),yaxis = list(title = 'Costs / Transaction'))
 ```
+
+## Next Steps
+
+- Do branded keywords bring in more revenue?
+- Are broad or focused keywords more profitable?
+- Can assist keywords help increase conversion rate?
 
