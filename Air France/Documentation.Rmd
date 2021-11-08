@@ -112,6 +112,9 @@ doubleclick_clean$`Bid Strategy` <- gsub("Postiion 1-4 Bid Strategy","Position 1
 
 doubleclick_clean$`Bid Strategy` <- gsub("Position 1 -2 Target","Position 1-2 Target",doubleclick_clean$`Bid Strategy`)
 
+write.csv(doubleclick_clean,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Air France/data-explorer/data_massaged.csv", row.names = FALSE)
+
+
 ```
 
 ## Descriptive

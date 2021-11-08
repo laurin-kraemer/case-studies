@@ -10,7 +10,11 @@
 library(shiny)
 library(readxl)
 library(tidyverse)
+library(devtools)
 
+install_github("Thinkr-open/shinysnippets")
+                        
+                        
 # Import data
 library(readr)
 data_massaged <- read_csv("data-explorer/data_massaged.csv")
