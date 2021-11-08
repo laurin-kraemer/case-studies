@@ -1,5 +1,5 @@
 
-# Part 1: Motivation
+# Air France Business Case
 
 ### Problem Statement
 - High Costs per click with SEM (Search Engine Marketing)
