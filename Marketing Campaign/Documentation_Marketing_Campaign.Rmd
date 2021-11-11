@@ -1,0 +1,66 @@
+---
+title: "Documentation_Marketing-Campaign"
+author: "Timon-Laurin Krämer"
+date: "11/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Motivation
+
+## Method
+
+## Mechanics
+
+1. Importing
+
+```{r}
+# Import
+library(readxl)
+mark_cmp <- read_excel("datasets_marketing_campaign_SF.xlsx")
+
+# Inspect
+colSums(is.na(mark_cmp))
+
+# Convert 
+mark_cmp <- as.data.frame(mark_cmp)
+
+```
+2. Massaging
+
+```{r}
+library(tidyr)
+
+# Remove NAs
+mark_cmp <- drop_na(mark_cmp)
+
+write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing Campaign/data.csv", row.names = FALSE)
+
+
+
+
+
+```
+
+3. Descriptive
+
+4. Predictive
+
+### Motivation
+Use of linear regression to classify the important variables that help us predict web purchases. 
+
+### Method
+
+### Mechanics
+
+```{r}
+
+model <- lm(NumWebPurchases ~ Income, data=mark_cmp)
+summary(model)
+
+```
+
+
