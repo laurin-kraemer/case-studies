@@ -1,5 +1,5 @@
 ---
-title: "Documentation_Marketing-Campaign"
+title: "Marketing-Campaign - Case Study"
 author: "Timon-Laurin Krämer"
 date: "11/11/2021"
 output: html_document
@@ -9,18 +9,31 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Motivation
+### Problem Statement
 
-## Method
+---- INSERT -----------
 
-## Mechanics
+### Main Objectives
 
-1. Importing
+---- INSERT ----------
 
-```{r}
+### Key Ressources
+
+----- INSERT --------
+
+### High-Level Process
+
+----- INSERT ----------
+
+## Part 1
+
+#### Importing
+
+```{r, warning=FALSE,message=FALSE,echo=FALSE}
 # Import libraries
 library(readxl)
 library(BBmisc)
+library('fastDummies')
 
 # Import data
 mark_cmp <- read_excel("datasets_marketing_campaign_SF.xlsx")
@@ -28,11 +41,11 @@ mark_cmp <- read_excel("datasets_marketing_campaign_SF.xlsx")
 # Inspect
 colSums(is.na(mark_cmp))
 
-# Convert 
+# Convert
 mark_cmp <- as.data.frame(mark_cmp)
 
 ```
-2. Massaging
+#### Massaging
 
 ```{r}
 library(tidyr)
@@ -40,12 +53,25 @@ library(tidyr)
 # Remove NAs
 mark_cmp <- drop_na(mark_cmp)
 
-# Create dummy variables
-library('fastDummies')
-dummy <- dummy_cols(mark_cmp, select_columns = c('Education', 'Marital_Status','Country'))
-
 # Change date variable from character to date
 mark_cmp$Dt_Customer <- as.Date(mark_cmp$Dt_Customer)
+
+# Create sub dfs for types numerical, character and dates
+
+bool <- sapply(mark_cmp,is.numeric)
+num_cols <- mark_cmp[,bool]
+
+bool <- sapply(mark_cmp,is.Date)
+date_cols <- mark_cmp[,bool]
+
+bool <- sapply(mark_cmp,is.character)
+cat_cols <- mark_cmp[,bool]
+
+# Create dummy variables for the categories
+cat_dummy <- dummy_cols(cat_cols, select_columns = c('Education', 'Marital_Status','Country'))
+
+# Remove the character entries
+cat_dummy <- cat_dummy[,4:ncol(cat_dummy)]
 
 # Write csv
 write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing Campaign/data.csv", row.names = FALSE)
@@ -53,17 +79,22 @@ write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing 
 
 ```
 
-3. Descriptive
 
-4. Predictive
+## Part 1a - Regression - Predictive 
+
+Label: Web Purchases
+Features: All numerical
 
 ### Motivation
-Use of linear regression to classify the important variables that help us predict web purchases. 
+Use of linear regression to classify the important variables that help us predict web purchases.
 
 ### Method
 - Checklist for Regression
 - Split into training and test data
 - Scale data
+- Train model using train data
+- Use the fitted model to predict unseen values (test-data)
+- Plot predicted vs actual values
 
 ### Mechanics
 
@@ -88,25 +119,30 @@ res <- resid(model)
 plot(fitted(model), res)
 qqnorm(res)
 
+```
 
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+
+# Let the model predict values for the test data
 pred <- predict(model,mark_test)
 
-
-# Test the model
+# Visualize the models performance
 plot(pred,mark_test$NumWebPurchases)
 
 ```
-We concluded that a few variables are not statistically significant. Therefore, we trained the model again using only the relevant variables. hvjhgjhgjhgjhgjhgjh
+### Message
+
+We concluded that a few variables are not statistically significant. Therefore, we trained the model again using only the relevant variables.
+
+### Better Regression
 
 ```{r}
+# Train the model
 better_model <- lm(NumWebPurchases ~ Income + Kidhome + Teenhome + MntWines + MntSweetProducts + MntGoldProds + NumDealsPurchases +NumStorePurchases +NumWebVisitsMonth, data=mark_train)
 summary(model)
 
-
 ```
-### Message 
-
-Interpret Business Success -> Odds
+## Part 1b - Descriptive - US vs rest of world
 
 ### Motivation
 
@@ -114,7 +150,7 @@ Interpret Business Success -> Odds
 
 ### Method
 
-- Aggregate columns to get the number of total purchases
+- Aggregate columns rowwise to get the number of total purchases
 - Split into US and Rest of the world
 
 ## Mechanics
@@ -126,15 +162,5 @@ mark_cmp$Total_Purch <- mark_cmp$NumDealsPurchases + mark_cmp$NumWebPurchases + 
 
 table(mark_cmp$Country)
 
-mark_cmp[which(mark_cmp)]
-
-
-sdoihsodihoishd
 
 ```
-
-
-
-
-
-
