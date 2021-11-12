@@ -61,8 +61,8 @@ mark_cmp$Dt_Customer <- as.Date(mark_cmp$Dt_Customer)
 bool <- sapply(mark_cmp,is.numeric)
 num_cols <- mark_cmp[,bool]
 
-bool <- sapply(mark_cmp,is.Date)
-date_cols <- mark_cmp[,bool]
+#bool <- sapply(mark_cmp,is.Date)
+#date_cols <- mark_cmp[,bool]
 
 bool <- sapply(mark_cmp,is.character)
 cat_cols <- mark_cmp[,bool]
@@ -72,6 +72,9 @@ cat_dummy <- dummy_cols(cat_cols, select_columns = c('Education', 'Marital_Statu
 
 # Remove the character entries
 cat_dummy <- cat_dummy[,4:ncol(cat_dummy)]
+
+# Combine data
+cat_num_cols <- cbind(cat_dummy,num_cols)
 
 # Write csv
 write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing Campaign/data.csv", row.names = FALSE)
@@ -147,10 +150,26 @@ We also highly advise personalizing the communications, deals, and preferences w
 
 ### Better Regression
 
+Label: Web Purchases
+Features: Numerical Variables selected based on findings in Part a
+
 ```{r}
 # Train the model
 better_model <- lm(NumWebPurchases ~ Income + Kidhome + Teenhome + MntWines + MntSweetProducts + MntGoldProds + NumDealsPurchases +NumStorePurchases +NumWebVisitsMonth, data=mark_train)
 summary(model)
+
+# Get residuals
+res <- resid(better_model)
+
+# Produce residual vs. fitted plot
+plot(fitted(better_model), res)
+qqnorm(res)
+
+# Let the model predict values for the test data
+pred <- predict(better_model,mark_test)
+
+# Visualize the models performance
+plot(pred,mark_test$NumWebPurchases)
 
 ```
 ## Part 1b - Descriptive - US vs rest of world
@@ -161,19 +180,52 @@ summary(model)
 
 ### Method
 
+<<<<<<< Updated upstream
 Our approach was to aggregate the columns which included: purchases made in store, catalog purchases, purchases through deals, and web purchases. From there, we created dummy variables with 1 and 0. If the country was US, we would place a 1, and if not, we would input a 0. We compared the two different categories with our explanatory variable of using the dummy variable for the country and our response will be the total purchases.
 
 H0: U.S. <= Rest of the world
 Ha: U.S. > Rest of the world
+=======
+- Aggregate columns rowwise to get the number of total purchases
+- Split into US and Rest of the world
+- Calculate 95% Confidence interval for difference in means
+>>>>>>> Stashed changes
 
 ## Mechanics
 
 ```{r}
 
 # Aggregate total purchases
-mark_cmp$Total_Purch <- mark_cmp$NumDealsPurchases + mark_cmp$NumWebPurchases + mark_cmp$NumCatalogPurchases + mark_cmp$NumStorePurchases
+cat_num_cols$Total_Purch <- cat_num_cols$NumDealsPurchases + cat_num_cols$NumWebPurchases + cat_num_cols$NumCatalogPurchases + cat_num_cols$NumStorePurchases
 
-table(mark_cmp$Country)
+# Create sub df for analysis for US customers and Rest of world
+us_customer <- cat_num_cols[which(cat_num_cols$Country_US==1),]
+world_customer <- cat_num_cols[-which(cat_num_cols$Country_US==1),]
 
+# Observations & Mean of purchases & Standard deviation of US-Customer
+n_us <- nrow(us_customer)
+mean_us <- mean(us_customer$Total_Purch)
+sd_us <- sd(us_customer$Total_Purch)
+
+# Observations & Mean of purchases & Standard deviation of World
+n_world <- nrow(world_customer)
+mean_world <- mean(world_customer$Total_Purch)
+sd_world <- sd(world_customer$Total_Purch)
+
+# Calculate pooled variance
+sp = ((n_us-1)*sd_us^2 + (n_world-1)*sd_world^2) / (n_us+n_world-2)
+
+# Calculate margin of error
+margin <- qt(0.975,df=n_us+n_world-1)*sqrt(sp/n_us + sp/n_world)
+
+#calculate lower and upper bounds of confidence interval
+low <- (mean_world-mean_us) - margin
+high <- (mean_world-mean_us) + margin
+
+```
+
+The 95% confidence interval for the true difference in population means is between `r low` and `r high`
+
+# Boxplot Distribution 
 
 ```
