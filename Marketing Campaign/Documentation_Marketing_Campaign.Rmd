@@ -96,7 +96,7 @@ pred <- predict(model,mark_test)
 plot(pred,mark_test$NumWebPurchases)
 
 ```
-We concluded that a few variables are not statistically significant. Therefore, we trained the model again using only the relevant variables. 
+We concluded that a few variables are not statistically significant. Therefore, we trained the model again using only the relevant variables. hvjhgjhgjhgjhgjhgjh
 
 ```{r}
 better_model <- lm(NumWebPurchases ~ Income + Kidhome + Teenhome + MntWines + MntSweetProducts + MntGoldProds + NumDealsPurchases +NumStorePurchases +NumWebVisitsMonth, data=mark_train)
