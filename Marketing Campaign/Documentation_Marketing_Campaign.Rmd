@@ -18,8 +18,11 @@ knitr::opts_chunk$set(echo = TRUE)
 1. Importing
 
 ```{r}
-# Import
+# Import libraries
 library(readxl)
+library(BBmisc)
+
+# Import data
 mark_cmp <- read_excel("datasets_marketing_campaign_SF.xlsx")
 
 # Inspect
@@ -37,10 +40,15 @@ library(tidyr)
 # Remove NAs
 mark_cmp <- drop_na(mark_cmp)
 
+# Create dummy variables
+library('fastDummies')
+dummy <- dummy_cols(mark_cmp, select_columns = c('Education', 'Marital_Status','Country'))
+
+# Change date variable from character to date
+mark_cmp$Dt_Customer <- as.Date(mark_cmp$Dt_Customer)
+
+# Write csv
 write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing Campaign/data.csv", row.names = FALSE)
-
-
-
 
 
 ```
@@ -53,14 +61,77 @@ write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing 
 Use of linear regression to classify the important variables that help us predict web purchases. 
 
 ### Method
+- Checklist for Regression
+- Split into training and test data
+- Scale data
 
 ### Mechanics
 
 ```{r}
 
-model <- lm(NumWebPurchases ~ Income, data=mark_cmp)
+# Scale the data
+scaled_mark = normalize(mark_cmp, method = "range", range = c(0, 1))
+
+# Split into training and test
+train_index <- sample(1:nrow(mark_cmp),size=0.8*nrow(mark_cmp))
+mark_train <- mark_cmp[train_index,]
+mark_test <- mark_cmp[-train_index,]
+
+# Train the model
+model <- lm(NumWebPurchases ~ ., data=mark_train)
 summary(model)
 
+# Get residuals
+res <- resid(model)
+
+# Produce residual vs. fitted plot
+plot(fitted(model), res)
+qqnorm(res)
+
+
+pred <- predict(model,mark_test)
+
+
+# Test the model
+plot(pred,mark_test$NumWebPurchases)
+
 ```
+We concluded that a few variables are not statistically significant. Therefore, we trained the model again using only the relevant variables. 
+
+```{r}
+better_model <- lm(NumWebPurchases ~ Income + Kidhome + Teenhome + MntWines + MntSweetProducts + MntGoldProds + NumDealsPurchases +NumStorePurchases +NumWebVisitsMonth, data=mark_train)
+summary(model)
+
+
+```
+### Message 
+
+Interpret Business Success -> Odds
+
+### Motivation
+
+- Do US-Customers buy more than the rest of the world?
+
+### Method
+
+- Aggregate columns to get the number of total purchases
+- Split into US and Rest of the world
+
+## Mechanics
+
+```{r}
+
+# Aggregate total purchases
+mark_cmp$Total_Purch <- mark_cmp$NumDealsPurchases + mark_cmp$NumWebPurchases + mark_cmp$NumCatalogPurchases + mark_cmp$NumStorePurchases
+
+table(mark_cmp$Country)
+
+mark_cmp[which(mark_cmp)]
+
+```
+
+
+
+
 
 
