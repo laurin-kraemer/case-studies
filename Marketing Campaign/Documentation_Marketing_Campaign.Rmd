@@ -3,13 +3,13 @@ title: "Marketing-Campaign - Case Study"
 author: "Timon-Laurin Krämer"
 date: "11/11/2021"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(echo=TRUE, warning = FALSE, message = FALSE)
 ```
 
 ### Problem Statement
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(warning = FALSE)
 
 #### Importing
 
-```{r message=FALSE, warning=FALSE}
+```{r, results='hide'}
 # Import libraries
 library(readxl)
 library(BBmisc)
@@ -48,9 +48,10 @@ colSums(is.na(mark_cmp))
 mark_cmp <- as.data.frame(mark_cmp)
 
 ```
+
 #### Massaging
 
-```{r message=FALSE, warning=FALSE}
+```{r}
 library(tidyr)
 
 # Remove NAs
@@ -83,7 +84,6 @@ cat_num_cols <- cbind(cat_dummy,num_cols)
 write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing Campaign/data.csv", row.names = FALSE)
 ```
 
-
 ## Part 1a - Regression - Predictive 
 
 Label: Web Purchases
@@ -102,7 +102,7 @@ Use of linear regression to classify the important variables that help us predic
 
 ### Mechanics
 
-```{r message=FALSE, warning=FALSE, echo=FALSE}
+```{r, results='hide'}
 
 # Scale the data
 scaled_mark = normalize(mark_cmp, method = "range", range = c(0, 1))
@@ -151,7 +151,7 @@ We also highly advise personalizing the communications, deals, and preferences w
 Label: Web Purchases
 Features: Numerical Variables selected based on findings in Part a
 
-```{r message=FALSE, warning=FALSE}
+```{r, results='hide'}
 # Train the model
 better_model <- lm(NumWebPurchases ~ Income + Kidhome + Teenhome + MntWines + MntSweetProducts + MntGoldProds + NumDealsPurchases +NumStorePurchases +NumWebVisitsMonth, data=mark_train)
 summary(model)
