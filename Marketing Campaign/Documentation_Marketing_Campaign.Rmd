@@ -206,7 +206,7 @@ Our approach was to aggregate the columns which included: purchases made in stor
 H0: U.S. Total Purchases <= Rest of the world
 Ha: U.S. Total Purchases > Rest of the world
 
-## Mechanics
+### Mechanics
 
 ```{r message=FALSE, warning=FALSE}
 
