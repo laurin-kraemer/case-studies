@@ -2,11 +2,14 @@
 title: "Marketing-Campaign - Case Study"
 author: "Timon-Laurin Krämer"
 date: "11/11/2021"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
 ```
 
 ### Problem Statement
@@ -29,11 +32,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #### Importing
 
-```{r, warning=FALSE,message=FALSE,echo=FALSE}
+```{r message=FALSE, warning=FALSE}
 # Import libraries
 library(readxl)
 library(BBmisc)
-library('fastDummies')
+library(fastDummies)
 
 # Import data
 mark_cmp <- read_excel("datasets_marketing_campaign_SF.xlsx")
@@ -47,7 +50,7 @@ mark_cmp <- as.data.frame(mark_cmp)
 ```
 #### Massaging
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(tidyr)
 
 # Remove NAs
@@ -78,8 +81,6 @@ cat_num_cols <- cbind(cat_dummy,num_cols)
 
 # Write csv
 write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing Campaign/data.csv", row.names = FALSE)
-
-
 ```
 
 
@@ -101,7 +102,7 @@ Use of linear regression to classify the important variables that help us predic
 
 ### Mechanics
 
-```{r}
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 
 # Scale the data
 scaled_mark = normalize(mark_cmp, method = "range", range = c(0, 1))
@@ -115,6 +116,9 @@ mark_test <- mark_cmp[-train_index,]
 model <- lm(NumWebPurchases ~ ., data=mark_train)
 summary(model)
 
+# Let the model predict values for the test data
+pred <- predict(model,mark_test)
+
 # Get residuals
 res <- resid(model)
 
@@ -122,17 +126,11 @@ res <- resid(model)
 plot(fitted(model), res)
 qqnorm(res)
 
-```
-
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-
-# Let the model predict values for the test data
-pred <- predict(model,mark_test)
-
-# Visualize the models performance
+# Produce predicted vs actual values
 plot(pred,mark_test$NumWebPurchases)
 
 ```
+
 ### Message 
 (Analysis of output)
 The first regression we run was built including all the variables we had from the case. This regression was meant to give us a first screening of the statistical significance every single variable brought into the model. Looking at the p-value from each row of the summary (which we decided to be < .05 to have a significant impact,) we could identify the variable with the highest potential. If we could have expected some variables to have an impact on web purchases, it would be number of web visits per month or number of store purchases. While on the other we see variables, initially we seemed not related to our goal, having a very high statistical significance in the model (i.e., amount sweet products, amount of gold products and number of kids residing in home. Now, in order to obtain a better regression, we excluded all the variables with a low impact and included just the ones with high potential, always basing our selection on p-values. We didn’t get rid of the variable of if a customer accepted the campaign: although we had a few observations that didn’t seem to be statistically important, we thought it wouldn’t make sense to eliminate this bunch of variables.
@@ -153,7 +151,7 @@ We also highly advise personalizing the communications, deals, and preferences w
 Label: Web Purchases
 Features: Numerical Variables selected based on findings in Part a
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # Train the model
 better_model <- lm(NumWebPurchases ~ Income + Kidhome + Teenhome + MntWines + MntSweetProducts + MntGoldProds + NumDealsPurchases +NumStorePurchases +NumWebVisitsMonth, data=mark_train)
 summary(model)
@@ -176,24 +174,18 @@ plot(pred,mark_test$NumWebPurchases)
 
 ### Motivation
 
-- We intend to find if there is any significance in demographics with purchasing behavior between the U.S. and the rest of the world. This is extremely vital for the marketing department due to attaining an overview of which region in the world purchases more and how to more effectively allocate budget and effort with different strategies.
+We intend to find if there is any significance in demographics with purchasing behavior between the U.S. and the rest of the world. This is extremely vital for the marketing department due to attaining an overview of which region in the world purchases more and how to more effectively allocate budget and effort with different strategies.
 
 ### Method
 
-<<<<<<< Updated upstream
-Our approach was to aggregate the columns which included: purchases made in store, catalog purchases, purchases through deals, and web purchases. From there, we created dummy variables with 1 and 0. If the country was US, we would place a 1, and if not, we would input a 0. We compared the two different categories with our explanatory variable of using the dummy variable for the country and our response will be the total purchases.
+Our approach was to aggregate the columns which included: purchases made in store, catalog purchases, purchases through deals, and web purchases. From there, we created dummy variables with 1 and 0. If the country was US, we would place a 1, and if not, we would input a 0. We compared the two different categories with our explanatory variable of using the dummy variable for the country and our response will be the total purchases. To find out statistical significance, we will calculate the 95% interval for the difference in means. 
 
 H0: U.S. <= Rest of the world
 Ha: U.S. > Rest of the world
-=======
-- Aggregate columns rowwise to get the number of total purchases
-- Split into US and Rest of the world
-- Calculate 95% Confidence interval for difference in means
->>>>>>> Stashed changes
 
 ## Mechanics
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 
 # Aggregate total purchases
 cat_num_cols$Total_Purch <- cat_num_cols$NumDealsPurchases + cat_num_cols$NumWebPurchases + cat_num_cols$NumCatalogPurchases + cat_num_cols$NumStorePurchases
@@ -226,6 +218,14 @@ high <- (mean_world-mean_us) + margin
 
 The 95% confidence interval for the true difference in population means is between `r low` and `r high`
 
-# Boxplot Distribution 
+```{r message=FALSE, warning=FALSE, echo=TRUE}
+library(plotly)
+
+fig <- plot_ly(y = us_customer$Total_Purch, type = "box", name="US") %>%
+        layout(title = 'Average Purchases per Country', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Country'),yaxis = list(title = 'Average Purchases'))
+fig <- fig %>% add_trace(y = world_customer$Total_Purch, name='Rest of world') 
+fig
+```
+
 
 ```
