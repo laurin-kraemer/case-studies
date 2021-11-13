@@ -12,17 +12,13 @@ always_allow_html: true
 knitr::opts_chunk$set(echo=TRUE, warning = FALSE, message = FALSE)
 ```
 
-### Problem Statement
-
----- INSERT -----------
-
 ### Main Objectives
 
----- INSERT ----------
+We are tasked to present to the Chief Marketing Officer our analysis of data set to increase total purchases and be more efficient with spending on the marketing department. If we are able to successfully correlate and come up with any significant regression models to show what variables are the most impactful in spending, we would consider our data research a success. 
 
 ### Key Ressources
 
------ INSERT --------
+We are given the data of 30 variables in our data to analyze. We are given data of customers such as: Year of birth, educational level, country, spending habits on certain items, online shopping, and other characteristics on a customer. From there, we will decide to further analyze and what to take out of our model in terms of importance. 
 
 ### High-Level Process
 
@@ -146,11 +142,10 @@ pred <- predict(model,mark_test)
 res <- resid(model)
 
 # Produce residual vs. fitted plot
-plot(fitted(model), res)
-#qqnorm(res)
+plot(fitted(model), res, main="Residual vs. fitted Values", xlab='Fitted', ylab='Residuals')
 
 # Produce predicted vs actual values
-plot(pred,mark_test$NumWebPurchases)
+plot(pred,mark_test$NumWebPurchases, main="Predicted vs. actual Values", xlab='Predicted Values', ylab='Actual Values')
 
 ```
 
@@ -173,14 +168,14 @@ summary(model)
 res <- resid(better_model)
 
 # Produce residual vs. fitted plot
-plot(fitted(better_model), res)
+plot(fitted(better_model), res, main="Residual vs. fitted Values", xlab='Fitted', ylab='Residuals')
 #qqnorm(res)
 
 # Let the model predict values for the test data
 pred <- predict(better_model,mark_test)
 
 # Visualize the models performance
-plot(pred,mark_test$NumWebPurchases)
+plot(pred,mark_test$NumWebPurchases, main="Predicted vs. actual Values", xlab='Predicted Values', ylab='Actual Values')
 
 ```
 
@@ -327,7 +322,7 @@ Use of linear regression to classify the important variables that help us predic
 
 ### Mechanics
 
-```{r}
+```{r, results='hide'}}
 
 mark_train$Binary1 <- c() #build the variable to store the values of the loop 
 
@@ -367,7 +362,7 @@ my_logit <- glm(MntFishProducts~Binary1+Binary2+Binary3, data=mark_train)
 summary(my_logit)
 res <- resid(my_logit)
 # Produce residual vs. fitted plot
-plot(fitted(my_logit), res)
+plot(fitted(my_logit), res,  main="Residual vs. fitted Values", xlab='Fitted', ylab='Residuals')
 qqnorm(res)
 
 mark_test$Binary1 <- c() #build the variable to store the values of the loop 
@@ -408,7 +403,7 @@ my_logit1 <- glm(MntFishProducts~Binary1+Binary2+Binary3, data=mark_test)
 summary(my_logit1)
 res <- resid(my_logit1)
 # Produce residual vs. fitted plot
-plot(fitted(my_logit1), res)
+plot(fitted(my_logit1), res,  main="Residual vs. fitted Values", xlab='Fitted', ylab='Residuals')
 qqnorm(res)
 model2 <- lm(MntFishProducts ~ ., data=mark_cmp)
 
