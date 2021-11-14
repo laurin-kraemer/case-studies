@@ -282,11 +282,9 @@ library(plotly)
 fig <- plot_ly(y = us_customer$Total_Purch, type = "box", name="US") %>%
         layout(title = 'Average Purchases per Country', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Country'),yaxis = list(title = 'Average Purchases'))
 fig <- fig %>% add_trace(y = world_customer$Total_Purch, name='Rest of world') 
+
 ```
 
-```{r, echo=TRUE}
-print(fig)
-```
 
 ## Part 1c - Descriptive - Gold vs non-Gold
 
