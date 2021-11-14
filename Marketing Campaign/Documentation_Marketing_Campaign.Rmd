@@ -5,11 +5,11 @@ date: "11/11/2021"
 output:
   pdf_document: default
   html_document: default
-always_allow_html: true
+always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ### Main Objectives
@@ -20,14 +20,7 @@ We are tasked to present to the Chief Marketing Officer our analysis of data set
 
 We are given the data of 30 variables in our data to analyze. We are given data of customers such as: Year of birth, educational level, country, spending habits on certain items, online shopping, and other characteristics on a customer. From there, we will decide to further analyze and what to take out of our model in terms of importance. 
 
-### High-Level Process
-
------ INSERT ----------
-
-## Part 1
-
-#### Importing
-
+### Import data
 
 ```{r, results='hide'}
 # Import libraries
@@ -47,11 +40,9 @@ colSums(is.na(mark_cmp))
 mark_cmp <- as.data.frame(mark_cmp)
 
 ```
+### Massage data
 
-#### Massaging
-
-
-```{r}
+```{r, results='hide'}
 library(tidyr)
 
 # Remove NAs
@@ -89,7 +80,7 @@ write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing 
 
 ### Descriptive
 
-```{r}
+```{r, echo=FALSE, out.height = '25%'}
 # Plot Histogram of customer age
 hist(mark_cmp$actual_age, 
      main="Histogram of Actual Age", 
@@ -101,7 +92,12 @@ hist(mark_cmp$actual_age,
      breaks=20)
 ```
 
+```{r, echo=FALSE,out.height = '25%'}
 
+ggplot(data=mark_cmp,aes(x=MntWines, y=MntMeatProducts))+ geom_point()
+
+
+```
 
 ## Part 1a - Regression - Predictive 
 
@@ -121,7 +117,7 @@ Use of linear regression to classify the important variables that help us predic
 
 ### Mechanics
 
-```{r, results='hide'}
+```{r, results='hide', fig.show='hold',out.width='50%'}
 
 # Scale the data
 scaled_mark = normalize(mark_cmp, method = "range", range = c(0, 1))
@@ -159,16 +155,18 @@ The first regression we run was built including all the variables we had from th
 Label: Web Purchases,
 Features: Numerical Variables selected based on findings in Part a
 
-```{r, results='hide'}
+```{r, results='hide', fig.show='hold',out.width='50%'}
 # Train the model
 better_model <- lm(NumWebPurchases ~ Income + Kidhome + Teenhome + MntWines + MntSweetProducts + MntGoldProds + NumDealsPurchases +NumStorePurchases +NumWebVisitsMonth, data=mark_train)
 summary(model)
 
+plot(better_model)
+
 # Get residuals
-res <- resid(better_model)
+#res <- resid(better_model)
 
 # Produce residual vs. fitted plot
-plot(fitted(better_model), res, main="Residual vs. fitted Values", xlab='Fitted', ylab='Residuals')
+#plot(fitted(better_model), res, main="Residual vs. fitted Values", xlab='Fitted', ylab='Residuals')
 #qqnorm(res)
 
 # Let the model predict values for the test data
@@ -208,7 +206,7 @@ Ha: U.S. Total Purchases > Rest of the world
 
 ### Mechanics
 
-```{r message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 
 # Aggregate total purchases
 cat_num_cols$Total_Purch <- cat_num_cols$NumDealsPurchases + cat_num_cols$NumWebPurchases + cat_num_cols$NumCatalogPurchases + cat_num_cols$NumStorePurchases
@@ -247,13 +245,15 @@ We saw that the U.S. and the rest of the world are not significantly different i
 
 #### Average Purchases per country
 
-```{r}
+```{r, echo=TRUE}
 library(plotly)
-
 fig <- plot_ly(y = us_customer$Total_Purch, type = "box", name="US") %>%
         layout(title = 'Average Purchases per Country', plot_bgcolor = "#e5ecf6",xaxis = list(title = 'Country'),yaxis = list(title = 'Average Purchases'))
 fig <- fig %>% add_trace(y = world_customer$Total_Purch, name='Rest of world') 
-fig
+```
+
+```{r, echo=TRUE}
+print(fig)
 ```
 
 ## Part 1c - Descriptive - Gold vs non-Gold
@@ -322,7 +322,7 @@ Use of linear regression to classify the important variables that help us predic
 
 ### Mechanics
 
-```{r, results='hide'}}
+```{r, results='hide',fig.show='hold',out.width='50%'}
 
 mark_train$Binary1 <- c() #build the variable to store the values of the loop 
 
@@ -405,14 +405,42 @@ res <- resid(my_logit1)
 # Produce residual vs. fitted plot
 plot(fitted(my_logit1), res,  main="Residual vs. fitted Values", xlab='Fitted', ylab='Residuals')
 qqnorm(res)
-model2 <- lm(MntFishProducts ~ ., data=mark_cmp)
+```
+- If the customer has a Phd, the amount spent on fish is reduced by 15.5$
+- If the customer is married, the amount spent on fish is reduced by 4.5$
+- If the customer has a Phd and is married, an additonal amount of 4.6$ is spent on fish.
 
+Pvalue of Binary3("Married Phd Candidates¨ vs amount spent on fish) is 0.42 which significantly high, that means "Married PhD candidates" dont have a significant relation with the amount spent on fish.
+
+### Better regression
+
+```{r, results='hide', fig.show='hold',out.width='50%'}
+# We tried with all the factors available to see if there is any relation with the amount spent on  fish.
+my_logit2 <- try(lm(MntFishProducts~., data=mark_test))
+summary(my_logit2)
+ 
+plot(my_logit2)
+
+my_logit3 <- glm(MntFishProducts~NumCatalogPurchases+Kidhome+Teenhome
+                , data=mark_test)
+summary(my_logit3)
 ```
 
+We can see that the catalogue purchases, the Kidhome and the Teen home all have relations with the amount of money spent on fish. We can see that 7.9 is the coefficient for the catalogues purchases, that means more amount is spend on fish through the catalogues.If the customer is  in the kidhome category, the amount spent on fish is reduced by 18.6. If the customer is in the teenhome category, the amount spent on fish is reduced by 16.5$
+  
 ## Part 1e - Regression - Predictive 
 
 ### Motivation
 
-### Mechanics
+We are testing if the amount spent on wines is related to how many kids there is at home.
+HO = MntWines and Kidhome are independent
+Ha = MntWines and Kidhome are dependent
 
-# Part 1: Key Findings
+### Mechanics
+```{r,out.height='50%'}
+my_logit2 <- (lm(MntWines~Kidhome, data=mark_test))
+summary(my_logit2)
+```
+P-value is significantly small so we ave the enough information to reject H0 and to accept Ha.For every additional kid a home has, the amount spent on wines is reduced by 312.5$.
+
+
