@@ -18,8 +18,12 @@ We are tasked to present to the Chief Marketing Officer our analysis of data set
 
 ### Key Ressources
 
-We are given the data of 30 variables in our data to analyze. We are given data of customers such as: Year of birth, educational level, country, spending habits on certain items, online shopping, and other characteristics on a customer. From there, we will decide to further analyze and what to take out of our model in terms of importance. 
+We are given the data of 30 variables in our data to analyze. We are given data of customers such as: Year of birth, educational level, country, spending habits on certain items, online shopping, and other characteristics on a customer. From there, we will decide to further analyze and what to take out of our model in terms of importance.
 
+### Key activities
+
+For the analysis, a clean data set is required. That is the reason why we first have to inspect the data for missing values before we can proceed. After the massaging, we will apply the 4-M Framework (Motivation, Method, Mechanics, Message) to analyze business problems using statistical tests, regressions and so on. 
+ 
 ### Import data
 
 ```{r, results='hide'}
@@ -29,6 +33,8 @@ library(BBmisc)
 library(fastDummies)
 library(dplyr)
 library(ggplot2)
+library(plotly)
+library(GGally)
 
 # Import data
 mark_cmp <- read_excel("datasets_marketing_campaign_SF.xlsx")
@@ -78,23 +84,45 @@ cat_num_cols <- cbind(cat_dummy,num_cols)
 write.csv(mark_cmp,"C:/Users/LK/Nextcloud7/Personal/Docs/case-studies/Marketing Campaign/data.csv", row.names = FALSE)
 ```
 
-### Descriptive
+### Visualize the data
 
-```{r, echo=FALSE, out.height = '25%'}
+```{r, results='hide', fig.show='hold',out.width='50%'}
 # Plot Histogram of customer age
 hist(mark_cmp$actual_age, 
      main="Histogram of Actual Age", 
-     xlab="Age of customers", 
+     ylab="Age of customers", 
      border="black", 
      col="blue",
      xlim=c(10, 90),
      las=1, 
      breaks=20)
-```
 
-```{r, echo=FALSE,out.height = '25%'}
+hist(cat_num_cols$Income, 
+     main="Histogram of Income", 
+     xlab="Income", 
+     border="black", 
+     col="blue",
+     xlim=c(0, 200000),
+     #las=1, 
+     breaks=500)
 
-ggplot(data=mark_cmp,aes(x=MntWines, y=MntMeatProducts))+ geom_point()
+hist(cat_num_cols$NumWebPurchases, 
+     main="Histogram of Web Purchases", 
+     xlab="Web Purchases", 
+     border="black", 
+     col="blue",
+     xlim=c(0, 25),
+     #las=1, 
+     breaks=20)
+
+hist(cat_num_cols$NumCatalogPurchases, 
+     main="Histogram of Catalog Purchases", 
+     xlab="Catalog Purchases", 
+     border="black", 
+     col="blue",
+     xlim=c(0, 25),
+     #las=1, 
+     breaks=20)
 
 
 ```
@@ -121,6 +149,10 @@ Use of linear regression to classify the important variables that help us predic
 
 # Scale the data
 scaled_mark = normalize(mark_cmp, method = "range", range = c(0, 1))
+
+```
+
+```{r, results='hide', fig.show='hold',out.width='50%'}
 
 # Split into training and test
 train_index <- sample(1:nrow(mark_cmp),size=0.8*nrow(mark_cmp))
